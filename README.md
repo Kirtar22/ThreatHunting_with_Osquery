@@ -52,6 +52,7 @@ The following are the key highlights under each category. Please have a look at 
 - getsids - equivalent 
 - svcscan - equivalent 
 - netscan - equivalent 
+- Code Injection
 - malfind (not exactly) equivalent 
 
 ## Driver Profiling 
