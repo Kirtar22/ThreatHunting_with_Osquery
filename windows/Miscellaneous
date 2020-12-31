@@ -21,3 +21,19 @@
 
 	select * from windows_security_center;
 	select * from windows_security_products;
+
+// Execution - T1059.001 - PowerShell
+
+	select p.pid,p.cmdline,p.parent as parentid,pp.path as parenpath ,pp.cmdline as parentcmdline from processes p join processes pp on p.parent=pp.pid where p.name like '%powershell%' OR p.pname like '%wsmprovhost%';
+	select p.pid,p.path,cp.pid as cpid,cp.name as cname,cp.cmdline as ccmdline from processes p join processes cp on p.pid=cp.parent where p.name like '%powershell%' OR p.pname like '%wsmprovhost%';
+	select p.pid,p.name, pp.pid as parentid,pp.name as parentname ,gp.pid as gpid,gp.name as gpname from processes p join processes pp on p.parent=pp.pid join processes gp on pp.parent=gp.pid where p.name like '%powershell%' OR p.pname like '%wsmprovhost%';
+	 
+// Execution - T1559.002 - Dynamic Data Exchange 
+	
+	select p.pid,p.cmdline,cp.pid as cpid,cp.name as cname,cp.cmdline as ccmdline from processes p join processes cp on p.pid=cp.parent where p.name like '%excel%';
+	
+// Latreal Movement - PSEXEC 
+
+	select s.name,s.path,s.start_type,s.status from services s where s.name like '%psexe%';
+	select s.name,s.path,s.module_path,s.start_type,s.status from services s where s.name like '%psexe%';
+	
