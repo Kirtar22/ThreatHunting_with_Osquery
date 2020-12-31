@@ -1,0 +1,49 @@
+// Memory Analysis 
+
+// 'pslist' equivalent 
+
+	select p.name,p.pid,p.parent as ppid,p.threads,p.handle_count,p.uid,DATETIME(p.start_time,'unixepoch') as starttime from processes p;
+	select p.name,p.pid,p.parent as ppid,p.threads,p.handle_count,p.uid,DATETIME(p.start_time,'unixepoch') as starttime from processes p order by starttime,p.name;
+
+// 'pstree' equivalent  ( Parent & Child) 
+
+	select p.pid,p.path,DATETIME(p.start_time,'unixepoch') as pstart_time,pp.pid as parentid,pp.name as parentname,DATETIME(pp.start_time,'unixepoch') asppstart from processes p inner join processes pp on p.parent=pp.pid order by p.start_time asc,p.path;
+
+// 'pstree' equivalent ( Grandparent, Parent & Child)
+
+	select p.pid,p.path,DATETIME(p.start_time,'unixepoch') as pstart_time,pp.pid as parentid,pp.name as parentname,DATETIME(pp.start_time,'unixepoch') asppstart from processes p inner join processes pp on p.parent=pp.pid order by p.start_time asc,p.path;
+
+// 'dlllist' equivalent ( with a specific pid ) -look for suspicious dll 
+
+	select pid,start,end,permissions,offset,path from process_memory_map where pid=13748 AND path NOT LIKE 'C:\windows\system32\%';
+ 	select pid,start,end,permissions,offset,path from process_memory_map where path LIKE '%temp%';
+
+ // 'dlllist' - load all the dlls (exclude std path  & exe from the output) 
+
+ 	select pid,permissions,offset,path from process_memory_map where path NOT LIKE 'C:\windows\system32\%' AND path not like '%exe%' order by path;
+
+ // 'getsids' - equivalent 
+
+ 	select p.pid,p.name,p.cmdline,p.uid,u.username,u.uuid as useruid,u.type,ug.gid as groupgid from processes p left join users u on p.uid=u.uid left join user_groups ug on u.uid=ug.uid where p.name like '%osquery%';
+
+// 'svcscan' - equivalent - look for any suspicious exe OR dll 
+
+	select s.name,s.status,s.start_type,s.pid,s.path,s.module_path,s.user_account from services s where s.name like '%audio%';
+ 	select s.name,s.status,s.start_type,s.pid,s.path,s.module_path,s.user_account from services s where s.path like '%svchost%';
+
+// svcscan - identify the loaded dll and service name for the suspicious process + with if laoded dll is signed or not 
+
+	select p.pid,p.name,p.path,ps.state,ps.local_address,ps.local_port,ps.remote_address,ps.remote_port,ps.protocol,DATETIME(p.start_time,'unixepoch') as starttime from processes p join process_open_sockets ps on p.pid=ps.pid;
+	select p.pid,p.name,p.path,ps.state,ps.remote_address,ps.remote_port,ps.protocol,DATETIME(p.start_time,'unixepoch') as starttime from processes p join process_open_sockets ps on p.pid=ps.pid;
+	select p.pid,p.name,p.path,ps.state,ps.remote_address,ps.remote_port,ps.protocol,DATETIME(p.start_time,'unixepoch') as starttime from processes p join process_open_sockets ps on p.pid=ps.pid where ps.state like '%established%';
+
+// Code Injection  - look for the running processes without a path on the disk  (producing false positives) && with users
+
+	 select p.pid,p.name,p.cmdline,p.cwd,p.path,p.parent,pp.name as parentname,pp.path as parent_name,pp.cmdline as pcmdline from processes p left join processes pp on p.parent=pp.pid where p.on_disk!=1;
+	 select p.pid,p.name,p.parent,pp.name as parentname,pp.path as parent_name,pp.cmdline as pcmdline,u.username from processes p left join processes pp on p.parent=pp.pid left join users u on p.uid=u.uid where p.on_disk!=1;
+
+// malfind (not exactly) equivalent  && With process and cmdline 
+
+	select pid,start,end,permissions,offset,path from process_memory_map where permissions like '%PAGE_EXECUTE_READWRITE';
+	select pid,start,end,permissions,offset,path from process_memory_map where permissions like '%PAGE_EXECUTE_READWRITE' and path='';
+	select p.pid,pp.cmdline,p.start,p.end,p.permissions,p.offset,p.path from process_memory_map p join processes pp on p.pid=pp.pid where permissions like '%PAGE_EXECUTE_READWRITE';
