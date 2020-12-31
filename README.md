@@ -1,4 +1,4 @@
-# ThreatHunting_with_Osquery
+# ThreatHunting & Incident Investigation with Osquery
 
 ![osquerylogo](https://github.com/Kirtar22/ThreatHunting_with_Osquery/blob/main/osquery.png) ![](https://github.com/Kirtar22/ThreatHunting_with_Osquery/blob/main/wp.png)     ![dart](https://github.com/Kirtar22/ThreatHunting_with_Osquery/blob/main/OIP.bmp)
 
