@@ -1,0 +1,23 @@
+// Miscellaneous 
+
+// Files with mtime<btime with hash values and sigcheck status in the critical directories
+
+	select f.path,h.md5, a.result,DATETIME(f.btime,'unixepoch') as btime,DATETIME(f.mtime,'unixepoch') as mtime from file f JOIN hash h on f.path=h.path JOIN authenticode a on f.path=a.path, time where mtime<btime AND f.directory like 'c:\windows\system32%';
+
+// List all the Users
+
+	 select uid,gid,username,shell,description from users;
+	 select uid,gid,username,directory from users;
+
+// List all the users with Administrative privs
+
+	select users.uid,users.gid,users.username,users.directory from users JOIN user_groups ON users.uid=user_groups.uid where user_groups.gid=544;
+
+// look for any suspicious domain connection
+
+	select type,name from dns_cache order by type;
+
+// Check the security status of the machine
+
+	select * from windows_security_center;
+	select * from windows_security_products;
