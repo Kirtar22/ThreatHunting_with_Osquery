@@ -3,6 +3,7 @@
 ![osquerylogo](https://github.com/Kirtar22/ThreatHunting_with_Osquery/blob/main/osquery.png) ![](https://github.com/Kirtar22/ThreatHunting_with_Osquery/blob/main/wp.png)     ![dart](https://github.com/Kirtar22/ThreatHunting_with_Osquery/blob/main/OIP.bmp)
 
 
+
 The objective of this repo is to share **100+ hunting queries (osquery)** that will help cyber threat analysts (hunter/investigator) in their hunting or investigation exercises. 
 Broadly, I have covered **persistence, process interrogation, memory analysis, driver profiling, and other misc categories**. Persistence and Process Interrogations queries map to the multiple tactics & techniques/sub-techniques of MITRE ATT&CK framework. 
 
