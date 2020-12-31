@@ -64,3 +64,7 @@ The following are the key highlights under each category. Please have a look at 
 - File Profilig - Files with mtime<btime with hash values and sigcheck status in the critical directories
 - Tracking User Changes
 - look for any suspicious domain connection
+
+## Linux 
+
+Note: I will share "osquery.conf" file and queries related to Linux as I get some time to work on them. 
