@@ -1,0 +1,32 @@
+// Driver Profiling 
+
+// Group By and Order By device_name
+
+ 	select device_name,count(device_name) from drivers group by device_name order by count(device_name) DESC;
+
+// Group by and Order by description
+	
+	select description,count(description) from drivers group by description order by count(description) DESC;
+
+// Drivers without device_name
+
+	select device_id,device_name from drivers where device_name='';
+
+// Drivers without manufacturer name with sign status
+
+	select device_id,device_name from drivers where manufacturer='';
+	select device_id,device_name,signed from drivers where manufacturer='';
+
+// Unsigned drivers && Unsigned drivers with time and other details 
+
+	select device_id,device_name,signed from drivers where signed!=1 ;
+	select d.device_id,d.device_name,d.manufacturer,d.service,d.image, DATETIME(d.date,'unixepoch') as time from drivers d, time where d.signed!=1;
+
+// Drivers with no service associated with sign status
+
+	select device_id,manufacturar, signed from drivers where service='';
+
+// Drivers Group by service and count by service
+
+	select service,device_name,count(service),signed from drivers where service!='' group by service order by count(service) desc;
+	
