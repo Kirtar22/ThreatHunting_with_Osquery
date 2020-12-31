@@ -1,8 +1,8 @@
 # ThreatHunting_with_Osquery
 
 [osquerylogo]
-The objective of this repo is to share 100+ hunting queries (osquery) thta will help cyber threat analysts (hunter/investigator) in their hunting or investigation exercises. 
-Broadly, I have covered **persistence, process interrogation,memory analsyis, driver profiling,and other misc categories**. Persistence and Process Interrogations queries map to the multiple tactics & techniques/sub-techniques of MITRE ATT&CK framework. 
+The objective of this repo is to share 100+ hunting queries (osquery) that will help cyber threat analysts (hunter/investigator) in their hunting or investigation exercises. 
+Broadly, I have covered **persistence, process interrogation, memory analysis, driver profiling, and other misc categories**. Persistence and Process Interrogations queries map to the multiple tactics & techniques/sub-techniques of MITRE ATT&CK framework. 
 
 The following are the key highlights under each category. Please have a look at the repo for the details. 
 
@@ -12,30 +12,30 @@ The following are the key highlights under each category. Please have a look at 
 - RunKeys (with hashvalue)
 - Security Support Provider
 - Service Creation / Modification (auto_start)
-- look for suspicious dlls loaded by any service (with associted username & hashvalue of the dll) 
+- look for suspicious dlls loaded by any service (with associated username & hash value of the dll) 
 - WMI Event Consumers (commandline & script) 
 - WMI Process interrogation
 - Application Shimming
 - Print Processors - Reg Keys
-- look for  suspicious print drivers
-- ScreenSaver Backdoor
-- Image File Execution Options Injection (IFEO)( debugger/GolbalFlag)
-- Powershell Process Interrogation
+- look for suspicious print drivers
+- Screensaver Backdoor
+- Image File Execution Options Injection (IFEO)(debugger/GolbalFlag)
+- PowerShell Process Interrogation
 - Dynamic Data Exchange (DDE) 
 
 ## Process Interrogation
 
 - Identify the parent & Grantparent processes for all OR a given process - look for any suspicious parent, child relationships 
-- Identifying Suspecious Processes (processes) with usernames (users)
+- Identifying Suspicious Processes (processes) with usernames (users)
 - Identifying the programs that are running from "TEMP" locations
-- Identify the processes with open pipes ( look for suspicious pipe and/or process) 
-- Any processes spawining out of wow64 directory
-- Identifying suspicious dlls loaded by any service  with user_account associted with it (with hash value) 
+- Identify the processes with open pipes (look for suspicious pipe and/or process) 
+- Any processes spawning out of wow64 directory
+- Identifying suspicious dlls loaded by any service with user_account associated with it (with hash value) 
 - Identify if the binary is signed or not 
-- Powershell Process Interrogation ( Parent / Childeren of Pwershell) 
-- WMI Process Interrogation( Parent / Childeren of Pwershell)
-- Identifying the execessive resources usage by a suspicious process - Excessive Memory Usage (In Bytes)
-- Identifying the processes that makes the remote network connections and look for any suspicous connections
+- PowerShell Process Interrogation (Parent / children of PowerShell) 
+- WMI Process Interrogation (Parent / children of PowerShell)
+- Identifying the excessive resources usage by a suspicious process - Excessive Memory Usage (In Bytes)
+- Identifying the processes that makes the remote network connections and look for any suspicious connections
 
 ## Memory Analysis 
 
