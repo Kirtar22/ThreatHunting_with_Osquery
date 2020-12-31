@@ -67,6 +67,8 @@ The following are the key highlights under each category. Please have a look at 
 - File Profilig - Files with mtime<btime with hash values and sigcheck status in the critical directories
 - Tracking User Changes
 - look for any suspicious domain connection
+- Execution (PS,DDE)
+- Lateral Movement 
 
 ## Linux 
 
