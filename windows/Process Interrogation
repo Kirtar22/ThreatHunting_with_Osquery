@@ -1,0 +1,94 @@
+// Process Interrogation 
+
+// Identifying Suspicious Processes (processes) with usernames (users)
+
+	select processes.name,processes.path,users.username from processes LEFT JOIN users ON processes.uid=users.uid where processes.path != '';
+	SELECT p.pid, p.uid,p.name,u.username FROM processes as p LEFT JOIN users as u ORDER BY start_time DESC LIMIT 20;
+	SELECT pid, username, name FROM processes p JOIN users u ON u.uid = p.uid ORDER BY start_time DESC LIMIT 5;
+	select COUNT(*) from processes;
+
+// Identify the parent & Grandparent processes for all OR a given process - look for any suspicious parent, child relationships 
+
+	select p.pid,p.name,pp.pid as parentid,pp.name as parentname, gp.pid as gpid, gp.name as gpname from processes p join processes pp on p.parent=pp.pid join processes gp on pp.parent=gp.pid order by p.start_time asc;
+	select p.pid,p.name, pp.pid as parentid,pp.name as parentname ,gp.pid as gpid,gp.name as gpname from processes p join processes pp on p.parent=pp.pid join processes gp on pp.parent=gp.pid where p.name like '%osquery%';
+	select p.pid,p.name, pp.pid as parentid,pp.name as parentname ,gp.pid as gpid,gp.name as gpname from processes p join processes pp on p.parent=pp.pid join processes gp on pp.parent=gp.pid where p.name like '%wmi%';
+
+// Identifying Programs that are installed from "TEMP" source
+
+	select name,install_location,install_source from programs where install_source LIKE '%TEMP%';
+
+// Identifying the programs that are running from "TEMP" locations
+
+	select name,install_location,install_source from programs where install_location LIKE '%TEMP%';
+
+// identify the install_location for a specific program && with hostname
+
+	select name,install_location from programs where name LIKE '%wireshark%';
+	select system_info.hostname,programs.name from programs join system_info where programs.name LIKE '%wireshark%';
+
+// Identify the processes with open pipes 
+	
+	select pipes.name as pipename,pipes.instances,pipes.flags,processes.name,processes.path from pipes LEFT JOIN processes ON pipes.pid=processes.pid where processes.name!='';
+
+// Identifying the processes that makes the remote network connections 
+
+	select processes.name,process_open_sockets.remote_address,process_open_sockets.remote_port from processes JOIN process_open_sockets ON processes.pid=process_open_sockets.pid;
+
+// Identifying the processes with its listening_ports 
+
+	select processes.name,listening_ports.port,listening_ports.address from processes JOIN listening_ports ON processes.pid=listening_ports.pid;
+
+// Identifying the excessive resources usage by a suspicious process - Excessive Memory Usage (In Bytes)
+
+	select pid,name,user_time,system_time,resident_size from processes order by resident_size;
+
+// Identifying the excessive resources usage by a suspicious process - Excessive Memory Usage (in MB)
+	
+	select pid,name,user_time,system_time,resident_size from processes order by user_time,system_time;
+
+// Identify the hash of the running processes with usernames
+
+	select p.pid,p.name,p.path,h.sha256,u.username from processes as p JOIN hash as h on p.path=h.path JOIN users as u on p.uid=u.uid LIMIT 10;
+
+// Process execution/start time 
+
+	select p.name,p.start_time, DATETIME(time.unix_time-(uptime.total_seconds-p.start_time),'unixepoch') as stime from processes as p, uptime,time  order by stime DESC limit 5;
+
+// Processes with its parents path 
+	
+	select p.name,p.pid,p.parent as parentid,pp.path from processes as p LEFT OUTER JOIN processes as pp on p.parent=pp.pid limit 10;
+
+// Verify the parent process of PowerShell 
+
+	 select p.name,p.path,p.pid,p.parent,h.md5,pp.path as parentpath from processes p JOIN hash h on p.path=h.path JOIN processes pp ON p.parent=pp.pid where p.path like '%power%';
+
+// Verify the parent process of wmi (with a hash value)
+
+	 select p.name,p.path,p.pid,p.parent,h.md5,pp.path as parentpath from processes p JOIN hash h on p.path=h.path JOIN processes pp ON p.parent=pp.pid where p.path like '%wmi%';
+
+// Any suspicious process running from PowerShell (with a hash value)
+
+	 select p.name,p.path,p.pid,p.parent,h.md5,pp.path as parentpath from processes p JOIN hash h on p.path=h.path JOIN processes pp ON p.parent=pp.pid where pp.path like '%PowerShell%';
+
+// Any suspicious process running from cmd (with a hash value)
+
+	select p.name,p.path,p.pid,p.parent,h.md5,pp.path as parentpath from processes p JOIN hash h on p.path=h.path JOIN processes pp ON p.parent=pp.pid where pp.path like '%cmd%';
+
+// Any suspicious process running from mshta & verify the parent of mshta
+
+	select p.name,p.path,p.pid,p.parent,h.md5,pp.path as parentpath from processes p JOIN hash h on p.path=h.path JOIN processes pp ON p.parent=pp.pid where pp.path like '%mshta%';
+	select p.name,p.path,p.pid,p.parent,h.md5,pp.path as parentpath from processes p JOIN hash h on p.path=h.path JOIN processes pp ON p.parent=pp.pid where p.path like '%mshta%';
+
+// Any processes spawning out of wow64 directory
+
+	select p.name,p.path,p.pid,p.parent,h.md5,pp.path as parentpath from processes p JOIN hash h on p.path=h.path JOIN processes pp ON p.parent=pp.pid where p.path like '%wow64%';
+
+// Identifying suspicious dlls loaded by any service  with user_account associated with it (with hash value) 
+
+	select s.name, s.path,s.module_path,s.start_type,s.user_account,h.md5 from services s left join hash h on s.module_path=h.path where s.path NOT LIKE 'C:\WINDOWS\System32\svchost.exe -k%' AND s.module_path!='';
+
+// Identify if the binary is signed or not && Identify the unsigned binaries in a directory 
+
+	select path,serial_number,issuer_name,subject_name,result from authenticode where path like 'C:\Windows\System32\cmd.exe';
+	select path,serial_number,issuer_name,subject_name,result from authenticode where path like 'C:\Windows\twain_32\%' AND result !='trusted';
+
