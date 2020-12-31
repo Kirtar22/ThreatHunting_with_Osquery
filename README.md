@@ -69,4 +69,4 @@ The following are the key highlights under each category. Please have a look at 
 
 ## Linux 
 
-Note: I will share "osquery.conf" file and queries related to Linux as I get some time to work on them. 
+Note: I will share "osquery.conf" file and queries related to Linux as I get some time to complete them. 
