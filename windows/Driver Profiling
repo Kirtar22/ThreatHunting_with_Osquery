@@ -24,7 +24,7 @@
 
 // Drivers with no service associated with sign status
 
-	select device_id,manufacturar, signed from drivers where service='';
+	select device_id,manufacturer, signed from drivers where service='';
 
 // Drivers Group by service and count by service
 
